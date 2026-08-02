@@ -126,6 +126,41 @@ class TestHAProvider:
         ):
             await provider.get_states()
 
+    @pytest.mark.asyncio
+    async def test_request_preserves_configured_url_path_prefix(self):
+        class Response:
+            status = 200
+
+            def raise_for_status(self):
+                pass
+
+            async def json(self):
+                return []
+
+        class Request:
+            async def __aenter__(self):
+                return Response()
+
+            async def __aexit__(self, exc_type, exc_value, traceback):
+                return False
+
+        class RecordingSession:
+            def __init__(self):
+                self.path = ""
+
+            def request(self, method, path, **kwargs):
+                self.path = path
+                return Request()
+
+        provider = HAProvider()
+        session = RecordingSession()
+        provider._session = session
+        provider._config = {"url": "http://supervisor/core"}
+
+        await provider.get_states()
+
+        assert session.path == "api/states"
+
 
 class TestGitProvider:
     def test_name_and_capabilities(self):

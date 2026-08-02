@@ -10,12 +10,13 @@ arch:
 startup: application
 boot: auto
 init: false
+homeassistant_api: true
 ports:
   8090/tcp: 8090
 ports_description:
   8090/tcp: MCP Server HTTP port
 options:
-  ha_url: http://homeassistant:8123
+  ha_url: http://supervisor/core
   ha_token: ""
   ha_verify_ssl: false
 schema:

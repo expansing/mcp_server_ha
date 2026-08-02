@@ -4,8 +4,8 @@ AI sysadmin for Home Assistant. This app exposes diagnostics, automation health,
 
 ## Configuration
 
-- **HA_URL**: Home Assistant URL (default: `http://homeassistant:8123`)
-- **HA_TOKEN**: Long-lived access token (required)
+ - **HA_URL**: Home Assistant API URL (default: `http://supervisor/core`)
+ - **HA_TOKEN**: Long-lived access token when using a custom URL; the default Supervisor proxy uses the add-on's Supervisor token
 - **HA_VERIFY_SSL**: Verify SSL certificates (default: `false`)
 
 ## Usage

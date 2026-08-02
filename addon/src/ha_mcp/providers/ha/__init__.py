@@ -33,7 +33,7 @@ class HAProvider:
 
     async def initialize(self, config: dict[str, Any]) -> None:
         self._config = config
-        url = config.get("url", "http://homeassistant.local:8123")
+        url = config.get("url", "http://homeassistant.local:8123").rstrip("/") + "/"
         token = config.get("token", "")
         verify_ssl = config.get("verify_ssl", True)
         connector = aiohttp.TCPConnector(ssl=verify_ssl)
@@ -71,7 +71,7 @@ class HAProvider:
         if not self._session:
             raise RuntimeError("HAProvider not initialized")
         try:
-            async with self._session.request(method, path, **kwargs) as resp:
+            async with self._session.request(method, path.lstrip("/"), **kwargs) as resp:
                 resp.raise_for_status()
                 if resp.status == 204:
                     return None

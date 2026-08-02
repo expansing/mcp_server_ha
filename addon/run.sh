@@ -7,8 +7,16 @@ HA_URL="$(jq --raw-output '.ha_url' "$CONFIG_PATH")"
 HA_TOKEN="$(jq --raw-output '.ha_token' "$CONFIG_PATH")"
 HA_VERIFY_SSL="$(jq --raw-output '.ha_verify_ssl' "$CONFIG_PATH")"
 
+if [ "$HA_URL" = "http://homeassistant:8123" ]; then
+    HA_URL="http://supervisor/core"
+fi
+
+if [ "$HA_URL" = "http://supervisor/core" ] && [ -n "${SUPERVISOR_TOKEN:-}" ]; then
+    HA_TOKEN="$SUPERVISOR_TOKEN"
+fi
+
 if [ -z "$HA_TOKEN" ]; then
-    echo "Error: HA_TOKEN is required" >&2
+    echo "Error: a Home Assistant token is required" >&2
     exit 1
 fi
 
