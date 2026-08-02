@@ -6,7 +6,7 @@ url: https://github.com/expansing/mcp_server_ha
 arch:
   - amd64
   - armv7
-  - arm64
+  - aarch64
 startup: application
 boot: auto
 options:
