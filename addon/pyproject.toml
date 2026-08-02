@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ha-mcp"
+version = "0.1.0"
+description = "Home Assistant MCP Server"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.9",
+    "dulwich>=0.22",
+    "docker>=7.0",
+    "aiomqtt>=2.0",
+    "pydantic-settings>=2.0",
+    "structlog>=24.0",
+    "diskcache>=5.0",
+    "networkx>=3.0",
+    "mcp>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+ha-mcp = "ha_mcp.server:main"
+
+[project.entry-points."ha_mcp.plugins"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

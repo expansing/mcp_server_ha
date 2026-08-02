@@ -1,0 +1,12 @@
+from __future__ import annotations
+
+from typing import Any
+
+from ha_mcp.models.action import Action
+from ha_mcp.models.recommendation import Recommendation
+from ha_mcp.models.staged_edit import EditType, StagedEdit
+
+
+class ScriptsAction(Action):
+    async def compile(self, recommendation: Recommendation, context: dict[str, Any]) -> list[StagedEdit]:
+        return []

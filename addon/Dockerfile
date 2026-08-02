@@ -8,7 +8,6 @@ RUN apk add --no-cache \
 
 COPY pyproject.toml /app/pyproject.toml
 COPY src /app/src
-COPY tests /app/tests
 
 RUN python3 -m venv /app/venv \
     && /app/venv/bin/pip install --no-cache-dir -e ".[dev]"
@@ -20,6 +19,6 @@ WORKDIR /app
 
 LABEL io.hass.version="0.1.0" \
       io.hass.type="app" \
-      io.hass.arch="amd64|armv7|arm64"
+      io.hass.arch="amd64|armv7|aarch64"
 
 CMD ["/app/run.sh"]
