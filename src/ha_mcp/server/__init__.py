@@ -1,15 +1,23 @@
 from __future__ import annotations
 
 import json
+import logging
+import sys
 from typing import Any
 
 import mcp.types as types
 from mcp.server import Server
-from mcp.server.stdio import stdio_server
+from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 
 from ha_mcp.app import App
 from ha_mcp.providers.ha import HAProvider
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    stream=sys.stderr,
+)
+logger = logging.getLogger("ha_mcp.server")
 
 app = App()
 server = Server("ha-mcp")
@@ -289,12 +297,26 @@ server.add_request_handler("resources/read", types.ReadResourceRequest, read_res
 
 
 async def main() -> None:
+    logger.info("Starting HA MCP Server")
     provider = HAProvider()
     app.set_provider(provider)
     app.auto_register_modules()
     await app.initialize({"ha": {}})
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(read_stream, write_stream, server.create_initialization_options())
+    logger.info("HA MCP Server initialized")
+    
+    try:
+        app_obj = server.streamable_http_app(
+            streamable_http_path="/mcp",
+            host="0.0.0.0",
+            port=8099,
+        )
+        import uvicorn
+        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8099, log_level="info")
+        server_instance = uvicorn.Server(config)
+        await server_instance.serve()
+    except Exception as exc:
+        logger.error("Server error: %s", exc, exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
