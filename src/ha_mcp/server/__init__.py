@@ -22,7 +22,7 @@ app = App()
 server = Server("ha-mcp")
 
 
-async def list_tools(params: types.PaginatedRequestParams) -> types.ListToolsResult:
+async def list_tools(_: object, params: types.PaginatedRequestParams) -> types.ListToolsResult:
     return types.ListToolsResult(
         tools=[
             types.Tool(name="analyze_entity_health", description="Analyze health of a specific entity", inputSchema={"type": "object", "properties": {"entity_id": {"type": "string"}}, "required": ["entity_id"]}),
@@ -61,7 +61,7 @@ async def list_tools(params: types.PaginatedRequestParams) -> types.ListToolsRes
     )
 
 
-async def call_tool(params: types.CallToolRequest) -> types.CallToolResult:
+async def call_tool(_: object, params: types.CallToolRequest) -> types.CallToolResult:
     name = params.params.name
     arguments = params.params.arguments or {}
 
@@ -251,7 +251,7 @@ async def call_tool(params: types.CallToolRequest) -> types.CallToolResult:
     return types.CallToolResult(content=[types.TextContent(type="text", text=f"Unknown tool: {name}")], isError=True)
 
 
-async def list_resources(params: types.PaginatedRequestParams) -> types.ListResourcesResult:
+async def list_resources(_: object, params: types.PaginatedRequestParams) -> types.ListResourcesResult:
     return types.ListResourcesResult(
         resources=[
             types.Resource(uri="ha://events/state_changes", name="State Changes", description="Live entity state change events", mimeType="application/json"),
@@ -264,7 +264,7 @@ async def list_resources(params: types.PaginatedRequestParams) -> types.ListReso
     )
 
 
-async def read_resource(params: types.ReadResourceRequest) -> types.ReadResourceResult:
+async def read_resource(_: object, params: types.ReadResourceRequest) -> types.ReadResourceResult:
     uri = params.params.uri
     if uri == "ha://events/state_changes":
         return types.ReadResourceResult(contents=[types.TextResourceContents(uri=uri, mimeType="application/json", text=json.dumps({"events": [], "message": "Connect via subscribe_events tool for live stream"}))])
