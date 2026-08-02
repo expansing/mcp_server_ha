@@ -1,13 +1,10 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:18.0.0
+ARG BUILD_FROM=ghcr.io/home-assistant/base:latest
+FROM $BUILD_FROM
 
-FROM ${BUILD_FROM}
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    jq
 
 COPY pyproject.toml /app/pyproject.toml
 COPY src /app/src
@@ -16,9 +13,13 @@ COPY tests /app/tests
 RUN python3 -m venv /app/venv \
     && /app/venv/bin/pip install --no-cache-dir -e ".[dev]"
 
-COPY run /app/run
-RUN chmod +x /app/run
+COPY run.sh /app/run.sh
+RUN chmod a+x /app/run.sh
 
 WORKDIR /app
 
-CMD ["/app/run"]
+LABEL io.hass.version="0.1.0" \
+      io.hass.type="app" \
+      io.hass.arch="amd64|armv7|arm64"
+
+CMD ["/app/run.sh"]
