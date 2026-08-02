@@ -11,10 +11,7 @@ class DiagnosticsCollector:
 
     async def collect(self, graph: GraphRepository) -> list[Observation]:
         observations: list[Observation] = []
-        try:
-            states = await self._ha.get_states()
-        except Exception:
-            states = []
+        states = await self._ha.get_states()
         for state in states:
             entity_id = state.get("entity_id", "")
             if not entity_id:

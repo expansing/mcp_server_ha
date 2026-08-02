@@ -8,6 +8,7 @@ import pytest
 from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
 from ha_mcp.modules.diagnostics.analyzer import DiagnosticsAnalyzer
+from ha_mcp.modules.diagnostics.collector import DiagnosticsCollector
 from ha_mcp.modules.diagnostics.module import DiagnosticsModule
 
 
@@ -110,3 +111,12 @@ class TestDiagnosticsModule:
         findings = await module.run(graph)
         assert len(findings) == 1
         assert findings[0].category == "health_score"
+
+    @pytest.mark.asyncio
+    async def test_propagates_provider_error(self):
+        class FailingHAProvider:
+            async def get_states(self) -> list[dict[str, Any]]:
+                raise RuntimeError("Home Assistant authentication failed")
+
+        with pytest.raises(RuntimeError, match="authentication failed"):
+            await DiagnosticsCollector(FailingHAProvider()).collect(FakeGraphRepo())

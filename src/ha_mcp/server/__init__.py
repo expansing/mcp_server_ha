@@ -89,6 +89,12 @@ async def call_tool(_: object, params: types.CallToolRequestParams) -> types.Cal
 
     if name == "health_score":
         result = await app.run_module("diagnostics", requested_by="mcp")
+        if result.status != "success":
+            error = result.details.get("error", "unknown diagnostics error")
+            return types.CallToolResult(
+                content=[types.TextContent(type="text", text=f"Health score unavailable: {error}")],
+                isError=True,
+            )
         if result.findings:
             meta = result.findings[0].metadata
             score = meta.get("score", 0)
