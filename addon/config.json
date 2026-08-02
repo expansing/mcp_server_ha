@@ -1,0 +1,37 @@
+{
+  "name": "HA MCP Server",
+  "version": "0.1.0",
+  "slug": "ha-mcp",
+  "description": "AI sysadmin for Home Assistant - analysis platform exposing diagnostics, automation health, and configuration search via MCP",
+  "url": "https://github.com/yourusername/mcp_server_ha",
+  "arch": ["amd64", "armv7", "arm64"],
+  "startup": "services",
+  "boot": "auto",
+  "options": {
+    "ha_url": "http://homeassistant:8123",
+    "ha_token": "",
+    "ha_verify_ssl": false
+  },
+  "schema": {
+    "ha_url": "str",
+    "ha_token": "str",
+    "ha_verify_ssl": "bool"
+  },
+  "ports": {},
+  "ports_description": {},
+  "map": [],
+  "environment": [
+    {
+      "name": "HA_URL",
+      "value": "/data/options.json"
+    },
+    {
+      "name": "HA_TOKEN",
+      "value": "/data/options.json"
+    },
+    {
+      "name": "HA_VERIFY_SSL",
+      "value": "/data/options.json"
+    }
+  ]
+}
