@@ -9,6 +9,7 @@ arch:
   - aarch64
 startup: application
 boot: auto
+init: false
 options:
   ha_url: http://homeassistant:8123
   ha_token: ""
