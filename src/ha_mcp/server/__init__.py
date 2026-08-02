@@ -21,6 +21,24 @@ app = App()
 server = Server("ha-mcp")
 
 
+class _FixHostHeaderMiddleware:
+    def __init__(self, app: object) -> None:
+        self._app = app
+
+    async def __call__(self, scope: dict, receive: object, send: object) -> None:
+        if scope.get("type") == "http":
+            headers = dict(scope.get("headers") or [])
+            host = headers.get(b"host", b"").decode("utf-8", errors="replace")
+            if host and not host.startswith(("localhost", "127.0.0.1", "::1")):
+                scope = {**scope, "headers": list(headers.items())}
+                scope["headers"] = [
+                    (name, value)
+                    for name, value in scope["headers"]
+                    if name.lower() != b"host"
+                ] + [(b"host", b"localhost:8090")]
+        await self._app(scope, receive, send)
+
+
 async def list_tools(params: types.PaginatedRequestParams) -> types.ListToolsResult:
     return types.ListToolsResult(
         tools=[
@@ -302,11 +320,20 @@ async def main() -> None:
     logger.info("HA MCP Server initialized")
     
     try:
-        app_obj = server.streamable_http_app(
+        mcp_app = server.streamable_http_app(
             streamable_http_path="/mcp",
         )
+        app_obj = _FixHostHeaderMiddleware(mcp_app)
         import uvicorn
-        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8090, log_level="info", proxy_headers=True)
+        config = uvicorn.Config(
+            app_obj,
+            host="0.0.0.0",
+            port=8090,
+            log_level="info",
+            proxy_headers=True,
+            forwarded_allow_ips="*",
+            server_header=False,
+        )
         server_instance = uvicorn.Server(config)
         await server_instance.serve()
     except Exception:
