@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import aiohttp
 import pytest
 
 from ha_mcp.models.provider_protocol import Capability, Provider
@@ -101,6 +102,29 @@ class TestHAProvider:
     async def test_shutdown_without_init(self):
         provider = HAProvider()
         await provider.shutdown()
+
+    @pytest.mark.asyncio
+    async def test_request_error_identifies_home_assistant_endpoint(self):
+        class FailingRequest:
+            async def __aenter__(self):
+                raise aiohttp.ServerDisconnectedError()
+
+            async def __aexit__(self, exc_type, exc_value, traceback):
+                return False
+
+        class FailingSession:
+            def request(self, *args, **kwargs):
+                return FailingRequest()
+
+        provider = HAProvider()
+        provider._config = {"url": "http://homeassistant:8123"}
+        provider._session = FailingSession()
+
+        with pytest.raises(
+            RuntimeError,
+            match=r"GET http://homeassistant:8123/api/states failed: Server disconnected",
+        ):
+            await provider.get_states()
 
 
 class TestGitProvider:

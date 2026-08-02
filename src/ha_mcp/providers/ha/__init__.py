@@ -70,11 +70,15 @@ class HAProvider:
     async def _request(self, method: str, path: str, **kwargs: Any) -> Any:
         if not self._session:
             raise RuntimeError("HAProvider not initialized")
-        async with self._session.request(method, path, **kwargs) as resp:
-            resp.raise_for_status()
-            if resp.status == 204:
-                return None
-            return await resp.json()
+        try:
+            async with self._session.request(method, path, **kwargs) as resp:
+                resp.raise_for_status()
+                if resp.status == 204:
+                    return None
+                return await resp.json()
+        except aiohttp.ClientError as exc:
+            url = self._config.get("url", "http://homeassistant.local:8123")
+            raise RuntimeError(f"Home Assistant request {method} {url}{path} failed: {exc}") from exc
 
     async def get_states(self) -> list[Observation]:
         states = await self._request("GET", "/api/states")
