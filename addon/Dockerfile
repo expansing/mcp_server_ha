@@ -6,6 +6,8 @@ RUN apk add --no-cache \
     py3-pip \
     jq
 
+WORKDIR /app
+
 COPY pyproject.toml /app/pyproject.toml
 COPY src /app/src
 
@@ -14,8 +16,6 @@ RUN python3 -m venv /app/venv \
 
 COPY run.sh /app/run.sh
 RUN chmod a+x /app/run.sh
-
-WORKDIR /app
 
 LABEL io.hass.version="0.1.0" \
       io.hass.type="app" \
