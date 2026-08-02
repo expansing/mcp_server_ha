@@ -80,9 +80,9 @@ class HAProvider:
             url = self._config.get("url", "http://homeassistant.local:8123")
             raise RuntimeError(f"Home Assistant request {method} {url}{path} failed: {exc}") from exc
 
-    async def get_states(self) -> list[Observation]:
+    async def get_states(self) -> list[dict[str, Any]]:
         states = await self._request("GET", "/api/states")
-        return [self._entity_dict_to_observation(e) for e in states]
+        return states if isinstance(states, list) else []
 
     async def get_entity_registry(self) -> list[GraphNode]:
         entries = await self._request("GET", "/api/config/entity_registry/list")

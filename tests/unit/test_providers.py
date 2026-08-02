@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+from unittest.mock import AsyncMock
 
 import aiohttp
 import pytest
@@ -160,6 +161,29 @@ class TestHAProvider:
         await provider.get_states()
 
         assert session.path == "api/states"
+
+    @pytest.mark.asyncio
+    async def test_get_states_returns_raw_home_assistant_payloads(self):
+        provider = HAProvider()
+        provider._request = AsyncMock(
+            return_value=[
+                {
+                    "entity_id": "sensor.temperature",
+                    "state": "20",
+                    "attributes": {},
+                }
+            ]
+        )
+
+        states = await provider.get_states()
+
+        assert states == [
+            {
+                "entity_id": "sensor.temperature",
+                "state": "20",
+                "attributes": {},
+            }
+        ]
 
 
 class TestGitProvider:
