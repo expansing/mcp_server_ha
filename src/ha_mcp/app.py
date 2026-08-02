@@ -49,10 +49,14 @@ class App:
     async def initialize(self, config: dict[str, Any]) -> None:
         if self._registry:
             await self._registry.initialize_all(config)
+        elif self._provider:
+            await self._provider.initialize(config.get(self._provider.name, {}))
 
     async def shutdown(self) -> None:
         if self._registry:
             await self._registry.shutdown_all()
+        elif self._provider:
+            await self._provider.shutdown()
 
     async def _compile_recommendations(
         self, findings: list[Finding], module: Any

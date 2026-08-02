@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -8,9 +9,11 @@ class HASettings(BaseSettings):
     token: str = ""
     verify_ssl: bool = True
 
+    model_config = {"env_prefix": "HA_"}
+
 
 class Settings(BaseSettings):
-    ha: HASettings = HASettings()
+    ha: HASettings = Field(default_factory=HASettings)
     log_level: str = "INFO"
 
     model_config = {"env_nested_delimiter": "__"}

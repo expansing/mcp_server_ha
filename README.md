@@ -66,14 +66,15 @@ config = {
 ### As a Standalone MCP Server
 
 ```bash
-# Start the MCP server (stdio transport)
+# Start the MCP server (Streamable HTTP)
 ha-mcp
 
 # Or directly with Python
 python -m ha_mcp.server
 ```
 
-The server uses **stdio** transport by default, communicating via JSON-RPC over stdin/stdout.
+The server listens on `http://localhost:8090/mcp` using Streamable HTTP. Set `HA_URL`,
+`HA_TOKEN`, and optionally `HA_VERIFY_SSL` before starting it.
 
 ### As a Library
 
@@ -129,7 +130,24 @@ claude --mcp "ha-mcp:ha-mcp"
 
 ### Other MCP Clients
 
-The server implements the standard MCP protocol over stdio. Any MCP-compatible client can connect by spawning the `ha-mcp` process.
+Any MCP-compatible client can connect to `http://localhost:8090/mcp` using Streamable HTTP.
+
+### VS Code
+
+When the `ha-mcp` server is connected in VS Code, open Copilot Chat in Agent mode and
+ask for one of the commands below in plain language. Copilot selects the matching MCP
+tool and supplies the arguments from your request. For example:
+
+```text
+Run health_score.
+Find broken automations.
+Analyze automation automation.morning.
+Validate this YAML: automation:\n  - alias: Kitchen lights
+```
+
+For tools with a required ID or value, include it in the prompt. For example, say
+`Diagnose dashboard lovelace-main` or `Search Home Assistant configuration for Tesla`.
+Review the result before running transaction commit or repair commands.
 
 ## Docker
 
@@ -157,22 +175,65 @@ The add-on runs as a service on the same network as Home Assistant and exposes t
 
 ## Available MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `analyze_entity_health` | Analyze health of a specific entity |
-| `find_unused_entities` | Find entities not referenced anywhere |
-| `health_score` | Get overall system health score 0-100 |
-| `analyze_automation` | Analyze an automation for issues |
-| `find_broken_automations` | Find automations with missing triggers or disabled state |
-| `analyze_dashboard` | Analyze a dashboard for deprecated cards or missing views |
-| `find_broken_dashboards` | Find dashboards with issues |
-| `full_system_diagnosis` | Comprehensive health check across all modules |
-| `search_configuration` | Semantic search across all configuration |
-| `analyze_scene` | Analyze a scene for issues |
-| `transaction_begin` | Start a new transaction for staging edits |
-| `transaction_commit` | Commit the current transaction |
-| `transaction_rollback` | Rollback the current transaction |
-| `transaction_status` | Get the status of a transaction |
+Use the command name in Copilot Chat, followed by its required values. Empty arguments
+mean the command can be run without parameters.
+
+### Entity and system health
+
+| Command | Required arguments | Example VS Code chat prompt |
+|---------|--------------------|-----------------------------|
+| `health_score` | None | `Run health_score.` |
+| `full_system_diagnosis` | None | `Run a full system diagnosis.` |
+| `analyze_entity_health` | `entity_id` | `Analyze entity health for sensor.living_room_temperature.` |
+| `find_unused_entities` | None | `Find unused entities.` |
+| `get_entity_dependencies` | `entity_id` | `Show dependencies for light.kitchen.` |
+| `search_configuration` | `query` | `Search configuration for Tesla charging.` |
+| `build_context` | `problem`; optional `scope` | `Build context for why lights are unavailable, scoped to lighting.` |
+
+### Automations, dashboards, scenes, and configuration
+
+| Command | Required arguments | Example VS Code chat prompt |
+|---------|--------------------|-----------------------------|
+| `analyze_automation` | `automation_id` | `Analyze automation automation.morning.` |
+| `simulate_automation` | `automation_id` | `Simulate automation automation.morning.` |
+| `find_broken_automations` | None | `Find broken automations.` |
+| `diagnose_dashboard` | `dashboard_id` | `Diagnose dashboard lovelace-main.` |
+| `validate_dashboard_yaml` | `yaml_content` | `Validate this dashboard YAML: <YAML content>.` |
+| `find_broken_dashboards` | None | `Find broken dashboards.` |
+| `repair_dashboard` | `dashboard_id` | `Repair dashboard lovelace-main.` |
+| `analyze_scene` | `scene_id` | `Analyze scene scene.evening.` |
+| `validate_template` | `template_string` | `Validate template {{ states('sensor.temperature') }}.` |
+| `explain_template` | `template_string` | `Explain template {{ is_state('binary_sensor.door', 'on') }}.` |
+| `validate_yaml` | `path_or_content` | `Validate this YAML: <YAML content>.` |
+
+### Integrations and events
+
+| Command | Required arguments | Example VS Code chat prompt |
+|---------|--------------------|-----------------------------|
+| `diagnose_integration` | `domain` | `Diagnose the mqtt integration.` |
+| `list_integrations` | None | `List installed integrations.` |
+| `find_unhealthy_integrations` | None | `Find unhealthy integrations.` |
+| `subscribe_events` | `filter`; optional `duration` | `Subscribe to automation events for 60 seconds.` |
+| `replay_events` | `filter`, `since` | `Replay state-change events since 2026-08-01T00:00:00Z.` |
+
+### Repair and transactions
+
+| Command | Required arguments | Example VS Code chat prompt |
+|---------|--------------------|-----------------------------|
+| `repair_system` | None | `Run a system repair scan.` |
+| `transaction_begin` | `description` | `Start a transaction to update kitchen automation.` |
+| `transaction_stage` | `transaction_id`, `edit` | `Stage this edit in transaction <ID>: <edit object>.` |
+| `transaction_diff` | `transaction_id` | `Show the diff for transaction <ID>.` |
+| `transaction_validate` | `transaction_id` | `Validate transaction <ID>.` |
+| `transaction_commit` | `transaction_id` | `Commit transaction <ID>.` |
+| `transaction_verify` | `transaction_id` | `Verify transaction <ID>.` |
+| `transaction_rollback` | `transaction_id` | `Roll back transaction <ID>.` |
+| `transaction_status` | `transaction_id` | `Show the status of transaction <ID>.` |
+
+The normal transaction sequence is: `transaction_begin`, `transaction_stage`,
+`transaction_diff`, `transaction_validate`, `transaction_commit`, then
+`transaction_verify`. Use `transaction_rollback` before committing when you need to
+discard staged changes.
 
 ## Project Structure
 

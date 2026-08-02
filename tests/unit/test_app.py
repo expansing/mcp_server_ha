@@ -59,6 +59,21 @@ class FakeHAForApp:
 
 class TestApp:
     @pytest.mark.asyncio
+    async def test_direct_provider_is_initialized_and_shutdown(self):
+        app = App()
+        provider = MagicMock()
+        provider.name = "ha"
+        provider.initialize = AsyncMock()
+        provider.shutdown = AsyncMock()
+        app.set_provider(provider)
+
+        await app.initialize({"ha": {"token": "test-token"}})
+        await app.shutdown()
+
+        provider.initialize.assert_awaited_once_with({"token": "test-token"})
+        provider.shutdown.assert_awaited_once()
+
+    @pytest.mark.asyncio
     async def test_run_module_returns_findings(self):
         app = App()
         provider = FakeHAForApp()

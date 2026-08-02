@@ -9,6 +9,7 @@ from mcp.server import Server
 from mcp.server.streamable_http_manager import TransportSecuritySettings
 
 from ha_mcp.app import App
+from ha_mcp.config import get_settings
 from ha_mcp.providers.ha import HAProvider
 
 logging.basicConfig(
@@ -299,7 +300,16 @@ async def main() -> None:
     provider = HAProvider()
     app.set_provider(provider)
     app.auto_register_modules()
-    await app.initialize({"ha": {}})
+    settings = get_settings()
+    await app.initialize(
+        {
+            "ha": {
+                "url": settings.ha.url,
+                "token": settings.ha.token,
+                "verify_ssl": settings.ha.verify_ssl,
+            }
+        }
+    )
     logger.info("HA MCP Server initialized")
     
     try:

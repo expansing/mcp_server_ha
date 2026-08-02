@@ -10,4 +10,6 @@ AI sysadmin for Home Assistant. This app exposes diagnostics, automation health,
 
 ## Usage
 
-This app runs as a service and provides an MCP interface over stdio. Connect to it using any MCP-compatible client.
+This app runs a Streamable HTTP MCP server at `http://<home-assistant-host>:8090/mcp`.
+Configure `ha_token` in the add-on configuration, then rebuild or restart the add-on
+after changing its settings.
