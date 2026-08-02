@@ -58,6 +58,14 @@ class FakeHAForApp:
 
 
 class TestApp:
+    def test_auto_register_modules_loads_diagnostics(self):
+        app = App()
+        app.set_provider(FakeHAForApp())
+
+        app.auto_register_modules()
+
+        assert "diagnostics" in app._modules
+
     @pytest.mark.asyncio
     async def test_direct_provider_is_initialized_and_shutdown(self):
         app = App()

@@ -35,7 +35,7 @@ class App:
                 continue
             full_name = f"{package_name}.{module_name}"
             try:
-                mod = importlib.import_module(full_name)
+                mod = importlib.import_module(f"{full_name}.module")
                 module_cls = None
                 for attr_name in dir(mod):
                     if attr_name.endswith("Module") and attr_name != "Module":
