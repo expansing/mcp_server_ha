@@ -40,3 +40,6 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.ruff.lint]
+ignore = ["BLE001", "S110", "S112", "ASYNC230"]

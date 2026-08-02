@@ -1,16 +1,13 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.search.analyzer import SearchAnalyzer
-from ha_mcp.modules.search.collector import SearchCollector
 from ha_mcp.modules.search.module import SearchModule
 
 
@@ -53,15 +50,15 @@ class FakeHAProvider:
                 "entity_id": "sensor.temperature",
                 "state": "20",
                 "attributes": {"friendly_name": "Temperature", "unit_of_measurement": "°C"},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             {
                 "entity_id": "sensor.humidity",
                 "state": "45",
                 "attributes": {"friendly_name": "Humidity", "unit_of_measurement": "%"},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
         ]
 
@@ -76,7 +73,7 @@ class TestSearchAnalyzer:
                 id="search-sensor.temperature",
                 type=ObservationType.STATE,
                 subject_id="sensor.temperature",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={
                     "entity_id": "sensor.temperature",
                     "state": "20",
@@ -99,7 +96,7 @@ class TestSearchAnalyzer:
                 id="search-sensor.temperature",
                 type=ObservationType.STATE,
                 subject_id="sensor.temperature",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={
                     "entity_id": "sensor.temperature",
                     "state": "20",

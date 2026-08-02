@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.finding import Severity
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.templates.analyzer import TemplatesAnalyzer
-from ha_mcp.modules.templates.collector import TemplatesCollector
 from ha_mcp.modules.templates.module import TemplatesModule
 
 
@@ -64,7 +62,7 @@ class TestTemplatesAnalyzer:
                 id="template-template.test2",
                 type=ObservationType.STATE,
                 subject_id="template.test2",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={"entity_id": "template.test2", "content": "Hello world"},
                 source="ha",
             )

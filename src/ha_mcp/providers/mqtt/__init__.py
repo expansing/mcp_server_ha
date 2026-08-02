@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
-from ha_mcp.models.provider_protocol import Capability, Provider
+from ha_mcp.models.provider_protocol import Capability
+from ha_mcp.models.provider_protocol import Provider as Provider
 
 
 class MQTTProvider:
@@ -51,7 +53,6 @@ class MQTTProvider:
     async def subscribe(self, topic: str, callback: Callable) -> None:
         if not self._client:
             raise RuntimeError("MQTTProvider not initialized")
-        async with self._client as client:
-            async with client.messages(topic) as messages:
-                async for message in messages:
-                    callback(message.payload.decode("utf-8", errors="replace"))
+        async with self._client as client, client.messages(topic) as messages:
+            async for message in messages:
+                callback(message.payload.decode("utf-8", errors="replace"))

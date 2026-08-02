@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from ha_mcp.models.finding import Finding
-from ha_mcp.models.graph_node import GraphNode
-from ha_mcp.models.observation import Observation
 from ha_mcp.graph.graph_repository import GraphRepository
+from ha_mcp.models.finding import Finding
+from ha_mcp.models.observation import Observation
 
 
 @runtime_checkable

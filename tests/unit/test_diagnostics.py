@@ -1,16 +1,13 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.diagnostics.analyzer import DiagnosticsAnalyzer
-from ha_mcp.modules.diagnostics.collector import DiagnosticsCollector
 from ha_mcp.modules.diagnostics.module import DiagnosticsModule
 
 
@@ -53,15 +50,15 @@ class FakeHAProvider:
                 "entity_id": "sensor.ok",
                 "state": "20",
                 "attributes": {"unit_of_measurement": "°C"},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             {
                 "entity_id": "sensor.bad",
                 "state": "unavailable",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(days=10)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(days=10)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
             },
         ]
 
@@ -76,16 +73,16 @@ class TestDiagnosticsAnalyzer:
                 id="state-sensor.ok",
                 type=ObservationType.STATE,
                 subject_id="sensor.ok",
-                timestamp=datetime.now(),
-                data={"state": "20", "attributes": {}, "last_changed": datetime.now().isoformat(), "last_updated": datetime.now().isoformat()},
+                timestamp=datetime.now(tz=UTC),
+                data={"state": "20", "attributes": {}, "last_changed": datetime.now(tz=UTC).isoformat(), "last_updated": datetime.now(tz=UTC).isoformat()},
                 source="ha",
             ),
             Observation(
                 id="state-sensor.bad",
                 type=ObservationType.STATE,
                 subject_id="sensor.bad",
-                timestamp=datetime.now(),
-                data={"state": "unavailable", "attributes": {}, "last_changed": datetime.now().isoformat(), "last_updated": datetime.now().isoformat()},
+                timestamp=datetime.now(tz=UTC),
+                data={"state": "unavailable", "attributes": {}, "last_changed": datetime.now(tz=UTC).isoformat(), "last_updated": datetime.now(tz=UTC).isoformat()},
                 source="ha",
             ),
         ]

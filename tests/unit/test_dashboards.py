@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.finding import Severity
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.dashboards.analyzer import DashboardsAnalyzer
-from ha_mcp.modules.dashboards.collector import DashboardsCollector
 from ha_mcp.modules.dashboards.module import DashboardsModule
 
 
@@ -76,7 +74,7 @@ class TestDashboardsAnalyzer:
                 id="dashboard-dashboard2",
                 type=ObservationType.STATE,
                 subject_id="dashboard2",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={
                     "id": "dashboard2",
                     "title": "Empty",
@@ -101,7 +99,7 @@ class TestDashboardsAnalyzer:
                 id="dashboard-dashboard1",
                 type=ObservationType.STATE,
                 subject_id="dashboard1",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={
                     "id": "dashboard1",
                     "title": "Living Room",

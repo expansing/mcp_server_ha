@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
-from typing import Any, Callable
+from collections.abc import Callable
+from datetime import UTC, datetime
+from typing import Any
 
 import aiohttp
 
-from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Capability, Provider
 from ha_mcp.models.graph_node import GraphNode, ResourceKind
+from ha_mcp.models.observation import Observation, ObservationType
+from ha_mcp.models.provider_protocol import Capability
+from ha_mcp.models.provider_protocol import Provider as Provider
 
 
 class HAProvider:
@@ -142,7 +144,7 @@ class HAProvider:
             id=entity_dict["entity_id"],
             type=ObservationType.STATE,
             subject_id=entity_dict["entity_id"],
-            timestamp=datetime.fromisoformat(entity_dict.get("last_changed", datetime.now().isoformat())),
+            timestamp=datetime.fromisoformat(entity_dict.get("last_changed", datetime.now(tz=UTC).isoformat())),
             data={
                 "state": entity_dict.get("state"),
                 "attributes": entity_dict.get("attributes", {}),

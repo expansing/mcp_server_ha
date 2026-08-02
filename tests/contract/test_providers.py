@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+
 from ha_mcp.models.provider_protocol import Capability, Provider
 from ha_mcp.providers.base import ProviderRegistry
 from ha_mcp.providers.docker import DockerProvider

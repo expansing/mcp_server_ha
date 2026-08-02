@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
+from dataclasses import FrozenInstanceError
+from datetime import UTC, datetime
 
 import pytest
-from dataclasses import FrozenInstanceError
 
 from ha_mcp.models.finding import Finding, Severity
 from ha_mcp.models.graph_node import GraphNode, ResourceKind
@@ -26,7 +26,7 @@ class TestFrozenModels:
             id="obs1",
             type=ObservationType.STATE,
             subject_id="node1",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={},
             source="ha",
         )

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Callable
-
-import pytest
+from collections.abc import Callable
+from typing import Any
 
 from ha_mcp.models.observation import Observation, ObservationType
 from ha_mcp.models.provider_protocol import Capability, Provider

@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.finding import Severity
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.scenes.analyzer import ScenesAnalyzer
-from ha_mcp.modules.scenes.collector import ScenesCollector
 from ha_mcp.modules.scenes.module import ScenesModule
 
 
@@ -72,7 +70,7 @@ class TestScenesAnalyzer:
                 id="scene-scene.empty",
                 type=ObservationType.STATE,
                 subject_id="scene.empty",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={
                     "entity_id": "scene.empty",
                     "name": "Empty",

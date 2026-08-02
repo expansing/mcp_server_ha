@@ -4,7 +4,7 @@ from typing import Any
 
 from ha_mcp.models.action import Action
 from ha_mcp.models.recommendation import Recommendation
-from ha_mcp.models.staged_edit import EditType, StagedEdit
+from ha_mcp.models.staged_edit import StagedEdit
 
 
 class ScriptsAction(Action):

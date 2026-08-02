@@ -1,20 +1,15 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+
 from ha_mcp.app import App
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
-from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.models.tool_result import ToolResult
-from ha_mcp.modules.entities.analyzer import EntitiesAnalyzer
-from ha_mcp.modules.entities.collector import EntitiesCollector
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.modules.entities.module import EntitiesModule
 from ha_mcp.providers.base import ProviderRegistry
-from ha_mcp.providers.ha import HAProvider
 
 
 class FakeGraphRepo:
@@ -56,8 +51,8 @@ class FakeHAForApp:
                 "entity_id": "sensor.stale",
                 "state": "unavailable",
                 "attributes": {},
-                "last_changed": (__import__("datetime").datetime.now() - __import__("datetime").timedelta(days=10)).isoformat(),
-                "last_updated": (__import__("datetime").datetime.now() - __import__("datetime").timedelta(days=10)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
             }
         ]
 

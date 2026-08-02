@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
-from unittest.mock import AsyncMock
 
 import pytest
-from ha_mcp.analysis.pipeline import Analyzer, Collector
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.analysis.pipeline import Collector
+from ha_mcp.models.finding import Severity
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
 from ha_mcp.models.staged_edit import EditType
-from ha_mcp.graph.graph_repository import GraphRepository
-from ha_mcp.models.provider_protocol import Provider
+from ha_mcp.modules.entities.action import NotifyAction
 from ha_mcp.modules.entities.analyzer import EntitiesAnalyzer
 from ha_mcp.modules.entities.collector import EntitiesCollector
-from ha_mcp.modules.entities.action import NotifyAction
 
 
 class MinimalGraphRepo:
@@ -50,15 +48,15 @@ class FakeHAProvider:
                 "entity_id": "sensor.temp",
                 "state": "20",
                 "attributes": {"unit_of_measurement": "°C"},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             {
                 "entity_id": "sensor.stale",
                 "state": "unavailable",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(days=10)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(days=10)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
             },
         ]
 
@@ -90,12 +88,12 @@ class TestEntitiesAnalyzer:
             id="state-sensor.stale",
             type=ObservationType.STATE,
             subject_id="sensor.stale",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={
                 "state": "unavailable",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(days=10)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(days=10)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(days=10)).isoformat(),
             },
             source="ha",
         )
@@ -113,12 +111,12 @@ class TestEntitiesAnalyzer:
             id="state-sensor.recent",
             type=ObservationType.STATE,
             subject_id="sensor.recent",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={
                 "state": "unavailable",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             source="ha",
         )
@@ -134,12 +132,12 @@ class TestEntitiesAnalyzer:
             id="state-sensor.ok",
             type=ObservationType.STATE,
             subject_id="sensor.ok",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={
                 "state": "20",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             source="ha",
         )
@@ -156,12 +154,12 @@ class TestEntitiesAnalyzer:
             id="state-sensor.unknown",
             type=ObservationType.STATE,
             subject_id="sensor.unknown",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={
                 "state": "unknown",
                 "attributes": {"unit_of_measurement": "°C"},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             source="ha",
         )
@@ -178,12 +176,12 @@ class TestEntitiesAnalyzer:
             id="state-sensor.noattrs",
             type=ObservationType.STATE,
             subject_id="sensor.noattrs",
-            timestamp=datetime.now(),
+            timestamp=datetime.now(tz=UTC),
             data={
                 "state": "20",
                 "attributes": {},
-                "last_changed": (datetime.now() - timedelta(hours=1)).isoformat(),
-                "last_updated": (datetime.now() - timedelta(hours=1)).isoformat(),
+                "last_changed": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
+                "last_updated": (datetime.now(tz=UTC) - timedelta(hours=1)).isoformat(),
             },
             source="ha",
         )

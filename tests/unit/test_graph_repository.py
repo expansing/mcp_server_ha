@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import pytest
-
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
 from ha_mcp.graph.graph_repository import GraphRepository
+from ha_mcp.models.graph_node import GraphNode
 
 
 class MinimalGraphRepo:

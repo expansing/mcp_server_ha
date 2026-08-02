@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from typing import Any
+from datetime import UTC, datetime, timedelta
 
-from ha_mcp.analysis.pipeline import Analyzer
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
-from ha_mcp.models.observation import Observation, ObservationType
 from ha_mcp.graph.graph_repository import GraphRepository
+from ha_mcp.models.finding import Finding, Severity
+from ha_mcp.models.observation import Observation, ObservationType
 
 
 class EntitiesAnalyzer:
@@ -27,7 +24,7 @@ class EntitiesAnalyzer:
         self, observations: list[Observation], graph: GraphRepository
     ) -> list[Finding]:
         findings: list[Finding] = []
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         entity_observations = [
             o for o in observations if o.type == ObservationType.STATE
         ]
@@ -43,8 +40,6 @@ class EntitiesAnalyzer:
             if now - last_changed < self._stale_threshold:
                 continue
             node = await graph.get_node(obs.subject_id)
-            attributes = node.attributes if node else {}
-            entity_name = attributes.get("name", obs.subject_id)
             integration_domain = node.integration_domain if node else None
             integration = integration_domain or "unknown"
             findings.append(

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import os
-import tempfile
-from datetime import datetime
+from datetime import UTC, datetime
 
 import pytest
 
@@ -11,7 +9,6 @@ from ha_mcp.transaction.transaction_manager import (
     Transaction,
     TransactionManager,
     TransactionStatus,
-    ValidationResult,
 )
 
 
@@ -31,7 +28,7 @@ class TestTransaction:
             id="tx1",
             description="test",
             status=TransactionStatus.OPEN,
-            created_at=datetime.now(),
+            created_at=datetime.now(tz=UTC),
             requested_by="user",
             tool_name="tool",
         )

@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import Any
-
-from ha_mcp.analysis.pipeline import Analyzer
+from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.models.finding import Finding, Severity
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.graph.graph_repository import GraphRepository
 
 
 class DashboardsAnalyzer:

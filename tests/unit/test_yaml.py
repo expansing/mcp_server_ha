@@ -1,16 +1,14 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from typing import Any
-from datetime import datetime, timedelta
 
 import pytest
-from ha_mcp.models.finding import Finding, Severity
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
+
+from ha_mcp.models.finding import Severity
+from ha_mcp.models.graph_node import GraphNode
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Provider
-from ha_mcp.graph.graph_repository import GraphRepository
 from ha_mcp.modules.yaml.analyzer import YAMLAnalyzer
-from ha_mcp.modules.yaml.collector import YAMLCollector
 from ha_mcp.modules.yaml.module import YAMLModule
 
 
@@ -70,7 +68,7 @@ class TestYAMLAnalyzer:
                 id="yaml-configuration",
                 type=ObservationType.STATE,
                 subject_id="configuration.yaml",
-                timestamp=datetime.now(),
+                timestamp=datetime.now(tz=UTC),
                 data={"content": "", "path": "configuration.yaml"},
                 source="filesystem",
             )

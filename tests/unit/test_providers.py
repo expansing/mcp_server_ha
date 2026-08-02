@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from ha_mcp.models.graph_node import GraphNode, ResourceKind
-from ha_mcp.models.observation import Observation, ObservationType
+
 from ha_mcp.models.provider_protocol import Capability, Provider
 from ha_mcp.providers.base import ProviderRegistry
 from ha_mcp.providers.docker import DockerProvider
