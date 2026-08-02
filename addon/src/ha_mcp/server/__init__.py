@@ -306,6 +306,7 @@ async def main() -> None:
         app_obj = server.streamable_http_app(
             streamable_http_path="/mcp",
             host="0.0.0.0",
+            stateless_http=True,
             transport_security=TransportSecuritySettings(
                 enable_dns_rebinding_protection=False,
                 allowed_hosts=["*"],
