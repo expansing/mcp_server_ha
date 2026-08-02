@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from ha_mcp.models.observation import Observation, ObservationType
-from ha_mcp.models.provider_protocol import Capability, Provider
+from ha_mcp.models.provider_protocol import Capability
+from ha_mcp.models.provider_protocol import Provider as Provider
 
 
 class LogsProvider:
@@ -50,7 +51,7 @@ class LogsProvider:
                             id=f"log-{len(results)}",
                             type=ObservationType.LOG,
                             subject_id="",
-                            timestamp=datetime.now(),
+                            timestamp=datetime.now(tz=UTC),
                             data={"message": line.rstrip(), "source": "logs"},
                             source="logs",
                         )

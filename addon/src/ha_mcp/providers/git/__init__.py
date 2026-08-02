@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime
 from typing import Any
 
-from ha_mcp.models.provider_protocol import Capability, Provider
+from ha_mcp.models.provider_protocol import Capability
+from ha_mcp.models.provider_protocol import Provider as Provider
 
 
 class GitProvider:

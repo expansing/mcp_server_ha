@@ -7,7 +7,6 @@ from typing import Any
 import networkx as nx
 
 from ha_mcp.models.graph_node import GraphNode, ResourceKind
-from ha_mcp.graph.graph_repository import GraphRepository
 
 
 class KnowledgeGraph:
@@ -54,14 +53,6 @@ class KnowledgeGraph:
             if word in tf:
                 score += tf[word] / len(doc_words) * self._idf.get(word, 0.0)
         return score
-
-    def add_node(self, node: GraphNode) -> None:
-        self._graph.add_node(
-            node.id,
-            resource_kind=node.resource_kind,
-            integration_domain=node.integration_domain,
-            attributes=node.attributes,
-        )
 
     def add_edge(self, source_id: str, target_id: str, relation: str = "depends_on") -> None:
         if source_id in self._graph.nodes and target_id in self._graph.nodes:

@@ -4,12 +4,11 @@ import importlib
 import pkgutil
 from typing import Any
 
+from ha_mcp.graph.graph_repository_impl import GraphRepositoryImpl
 from ha_mcp.models.finding import Finding
 from ha_mcp.models.recommendation import Recommendation
 from ha_mcp.models.tool_result import ToolResult
 from ha_mcp.transaction.transaction_manager import TransactionManager
-from ha_mcp.modules.entities.module import EntitiesModule
-from ha_mcp.graph.graph_repository_impl import GraphRepositoryImpl
 
 
 class App:

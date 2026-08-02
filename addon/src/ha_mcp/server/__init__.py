@@ -3,11 +3,9 @@ from __future__ import annotations
 import json
 import logging
 import sys
-from typing import Any
 
-import mcp.types as types
+from mcp import types
 from mcp.server import Server
-from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 
 from ha_mcp.app import App
 from ha_mcp.providers.ha import HAProvider
@@ -120,8 +118,7 @@ async def call_tool(params: types.CallToolRequest) -> types.CallToolResult:
         return types.CallToolResult(content=[types.TextContent(type="text", text=f"Dashboard diagnosis for {dashboard_id}: {len(findings)} findings")])
 
     if name == "validate_dashboard_yaml":
-        yaml_content = arguments.get("yaml_content", "")
-        return types.CallToolResult(content=[types.TextContent(type="text", text=f"Dashboard YAML validation: syntax OK")])
+        return types.CallToolResult(content=[types.TextContent(type="text", text="Dashboard YAML validation: syntax OK")])
 
     if name == "find_broken_dashboards":
         result = await app.run_module("dashboards", requested_by="mcp")
@@ -130,7 +127,7 @@ async def call_tool(params: types.CallToolRequest) -> types.CallToolResult:
 
     if name == "validate_template":
         template_string = arguments.get("template_string", "")
-        return types.CallToolResult(content=[types.TextContent(type="text", text=f"Template validation: syntax OK")])
+        return types.CallToolResult(content=[types.TextContent(type="text", text="Template validation: syntax OK")])
 
     if name == "explain_template":
         template_string = arguments.get("template_string", "")
@@ -218,7 +215,7 @@ async def call_tool(params: types.CallToolRequest) -> types.CallToolResult:
         if not tx:
             return types.CallToolResult(content=[types.TextContent(type="text", text=f"Transaction {transaction_id} not found")])
         diffs = [e.diff for e in tx.edits]
-        return types.CallToolResult(content=[types.TextContent(type="text", text=f"Transaction diff:\n" + "\n".join(diffs))])
+        return types.CallToolResult(content=[types.TextContent(type="text", text="Transaction diff:\n" + "\n".join(diffs))])
 
     if name == "transaction_validate":
         transaction_id = arguments.get("transaction_id", "")
@@ -307,15 +304,13 @@ async def main() -> None:
     try:
         app_obj = server.streamable_http_app(
             streamable_http_path="/mcp",
-            host="0.0.0.0",
-            port=8099,
         )
         import uvicorn
-        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8099, log_level="info")
+        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8090, log_level="info")
         server_instance = uvicorn.Server(config)
         await server_instance.serve()
-    except Exception as exc:
-        logger.error("Server error: %s", exc, exc_info=True)
+    except Exception:
+        logger.exception("Server error")
         raise
 
 

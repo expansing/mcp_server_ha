@@ -11,9 +11,9 @@ startup: application
 boot: auto
 init: false
 ports:
-  8099/tcp: 8099
+  8090/tcp: 8090
 ports_description:
-  8099/tcp: MCP Server HTTP port
+  8090/tcp: MCP Server HTTP port
 options:
   ha_url: http://homeassistant:8123
   ha_token: ""

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 
@@ -49,7 +49,7 @@ class TransactionManager:
             id=uuid.uuid4().hex,
             description=description,
             status=TransactionStatus.OPEN,
-            created_at=datetime.now(),
+            created_at=datetime.now(tz=UTC),
             requested_by=requested_by,
             tool_name=tool_name,
         )
@@ -94,7 +94,7 @@ class TransactionManager:
                     tx.status = TransactionStatus.FAILED
                     return tx
         tx.status = TransactionStatus.COMMITTED
-        tx.committed_at = datetime.now()
+        tx.committed_at = datetime.now(tz=UTC)
         return tx
 
     async def verify(self, transaction_id: str) -> ValidationResult:

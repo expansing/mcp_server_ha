@@ -1,4 +1,4 @@
-from ha_mcp.plugins.manifest import PluginManifest
 from ha_mcp.plugins.loader import PluginLoader
+from ha_mcp.plugins.manifest import PluginManifest
 
-__all__ = ["PluginManifest", "PluginLoader"]
+__all__ = ["PluginLoader", "PluginManifest"]
