@@ -1,10 +1,11 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/base:latest
+ARG BUILD_FROM=python:3.11-slim
 FROM $BUILD_FROM
 
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    jq
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3-venv \
+        jq \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
