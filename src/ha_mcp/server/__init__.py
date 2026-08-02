@@ -61,9 +61,9 @@ async def list_tools(_: object, params: types.PaginatedRequestParams) -> types.L
     )
 
 
-async def call_tool(_: object, params: types.CallToolRequest) -> types.CallToolResult:
-    name = params.params.name
-    arguments = params.params.arguments or {}
+async def call_tool(_: object, params: types.CallToolRequestParams) -> types.CallToolResult:
+    name = params.name
+    arguments = params.arguments or {}
 
     if name == "analyze_entity_health":
         entity_id = arguments.get("entity_id", "")
@@ -264,8 +264,8 @@ async def list_resources(_: object, params: types.PaginatedRequestParams) -> typ
     )
 
 
-async def read_resource(_: object, params: types.ReadResourceRequest) -> types.ReadResourceResult:
-    uri = params.params.uri
+async def read_resource(_: object, params: types.ReadResourceRequestParams) -> types.ReadResourceResult:
+    uri = str(params.uri)
     if uri == "ha://events/state_changes":
         return types.ReadResourceResult(contents=[types.TextResourceContents(uri=uri, mimeType="application/json", text=json.dumps({"events": [], "message": "Connect via subscribe_events tool for live stream"}))])
     if uri == "ha://events/automation_executions":
@@ -289,9 +289,9 @@ async def read_resource(_: object, params: types.ReadResourceRequest) -> types.R
 
 
 server.add_request_handler("tools/list", types.PaginatedRequestParams, list_tools)
-server.add_request_handler("tools/call", types.CallToolRequest, call_tool)
+server.add_request_handler("tools/call", types.CallToolRequestParams, call_tool)
 server.add_request_handler("resources/list", types.PaginatedRequestParams, list_resources)
-server.add_request_handler("resources/read", types.ReadResourceRequest, read_resource)
+server.add_request_handler("resources/read", types.ReadResourceRequestParams, read_resource)
 
 
 async def main() -> None:
