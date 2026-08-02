@@ -304,8 +304,6 @@ async def main() -> None:
     try:
         app_obj = server.streamable_http_app(
             streamable_http_path="/mcp",
-            host="0.0.0.0",
-            port=8099,
         )
         import uvicorn
         config = uvicorn.Config(app_obj, host="0.0.0.0", port=8099, log_level="info")
