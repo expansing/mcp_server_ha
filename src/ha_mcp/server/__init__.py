@@ -306,7 +306,7 @@ async def main() -> None:
             streamable_http_path="/mcp",
         )
         import uvicorn
-        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8090, log_level="info")
+        config = uvicorn.Config(app_obj, host="0.0.0.0", port=8090, log_level="info", proxy_headers=True)
         server_instance = uvicorn.Server(config)
         await server_instance.serve()
     except Exception:

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "ha-mcp": {
+      "type": "remote",
+      "url": "http://homeassistant.local:8090/mcp",
+      "enabled": true
+    }
+  }
+}
